@@ -104,6 +104,8 @@ function renderMovement() {
   const plan = activeMovement ? movementPlans[activeMovement] : null;
   document.querySelectorAll("[data-movement]").forEach((button) => button.classList.toggle("is-selected", button.dataset.movement === activeMovement));
   movementGuide.classList.toggle("is-active", movementState === "running");
+  movementGuide.dataset.demo = activeMovement || "idle";
+  movementGuide.dataset.step = String(activeStep);
   if (!plan) return;
   if (movementState === "done") {
     guideCount.textContent = "✓";
