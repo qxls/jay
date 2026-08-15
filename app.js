@@ -1,8 +1,8 @@
 const notes = [
-  "�㲻��Ҫ�ڽ������������⡣",
-  "û�н�չ��һ�죬Ҳ�������ڻ�����һ��ͻ�ơ�",
-  "���չ˺��о��ߣ����������չ��о���",
-  "��Ϣ����ƫ���������ǿ��й��̵�һ���֡�",
+  "你不需要在今天解决所有问题。",
+  "没有进展的一天，也可能是在积蓄下一次突破。",
+  "先照顾好研究者，才有力气照顾研究。",
+  "休息不是偏离轨道，而是科研过程的一部分。",
 ];
 
 let seconds = 60;
@@ -18,8 +18,8 @@ const toggle = document.querySelector("#toggle-breath");
 function renderTimer() {
   counter.textContent = seconds;
   breathVisual.classList.toggle("is-running", running);
-  breathText.textContent = !running ? (seconds === 0 ? "���úܺ�" : "׼��������") : (seconds % 10 < 5 ? "��������" : "��������");
-  toggle.textContent = running ? "��ͣһ��" : (seconds > 0 && seconds < 60 ? "��������" : "��ʼ����");
+  breathText.textContent = !running ? (seconds === 0 ? "做得很好" : "准备好了吗") : (seconds % 10 < 5 ? "慢慢吸气" : "缓缓呼气");
+  toggle.textContent = running ? "暂停一下" : (seconds > 0 && seconds < 60 ? "继续呼吸" : "开始呼吸");
 }
 
 function tick() {
