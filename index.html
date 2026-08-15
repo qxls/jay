@@ -54,10 +54,16 @@
           <button class="movement-card" data-movement="eyes"><span class="movement-icon">◉</span><span><strong>眼睛远眺</strong><small>把视线从屏幕移开，让眼睛歇一会儿。</small></span><em>40 秒 →</em></button>
         </div>
         <div class="movement-guide" id="movement-guide" aria-live="polite">
-          <div class="move-demo" aria-hidden="true">
-            <div class="demo-shoulders"><span class="demo-head"></span><span class="demo-neck"></span><span class="demo-shoulder-line"></span><span class="demo-torso"></span></div>
-            <div class="demo-wrists"><span class="demo-forearm left"></span><span class="demo-hand left"></span><span class="demo-forearm right"></span><span class="demo-hand right"></span></div>
-            <div class="demo-eyes"><span class="demo-eye"><i></i></span><span class="demo-focus-dot"></span></div>
+          <div class="move-demo vivid-demo" aria-hidden="true">
+            <div class="vivid vivid-shoulders">
+              <span class="vivid-label">肩颈小教练</span><span class="coach-head"><i></i></span><span class="coach-neck"></span><span class="coach-body"></span><span class="coach-arm left"></span><span class="coach-arm right"></span><b class="motion-arrow left">↺</b><b class="motion-arrow right">↻</b>
+            </div>
+            <div class="vivid vivid-wrists">
+              <span class="vivid-label">手腕小教练</span><span class="palm left"><i></i><i></i><i></i><i></i></span><span class="palm right"><i></i><i></i><i></i><i></i></span><b class="wrist-arrow left">↺</b><b class="wrist-arrow right">↻</b>
+            </div>
+            <div class="vivid vivid-eyes">
+              <span class="vivid-label">眼睛小教练</span><span class="face"><span class="face-eye left"><i></i></span><span class="face-eye right"><i></i></span><b class="smile"></b></span><span class="sight-line"></span><span class="far-target">远处</span>
+            </div>
           </div>
           <span class="guide-count" id="guide-count">∞</span><p id="guide-instruction">选一个动作，跟着自己的节奏慢慢来。</p><small id="guide-step">不需要做到标准，只需要感到舒服。</small><button id="guide-control" hidden>暂停</button>
         </div>
