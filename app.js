@@ -89,6 +89,7 @@ const movementPlans = {
 };
 
 let movementTimer = null;
+let movementState = "idle";
 let activeMovement = null;
 let activeStep = 0;
 let movementSeconds = 0;
@@ -102,20 +103,25 @@ const guideControl = document.querySelector("#guide-control");
 function renderMovement() {
   const plan = activeMovement ? movementPlans[activeMovement] : null;
   document.querySelectorAll("[data-movement]").forEach((button) => button.classList.toggle("is-selected", button.dataset.movement === activeMovement));
-  movementGuide.classList.toggle("is-active", Boolean(movementTimer));
+  movementGuide.classList.toggle("is-active", movementState === "running");
   if (!plan) return;
-  guideCount.textContent = movementTimer ? movementSeconds : "✓";
-  guideInstruction.textContent = movementTimer ? plan.steps[activeStep][1] : "做得很好，感受一下身体现在的状态。";
-  guideStep.textContent = movementTimer ? `${plan.title} · 第 ${activeStep + 1} / ${plan.steps.length} 步` : `${plan.title}已完成`;
+  if (movementState === "done") {
+    guideCount.textContent = "✓";
+    guideInstruction.textContent = "做得很好，感受一下身体现在的状态。";
+    guideStep.textContent = `${plan.title}已完成`;
+    guideControl.textContent = "再做一次";
+  } else {
+    guideCount.textContent = movementSeconds;
+    guideInstruction.textContent = plan.steps[activeStep][1];
+    guideStep.textContent = `${plan.title} · 第 ${activeStep + 1} / ${plan.steps.length} 步`;
+    guideControl.textContent = movementState === "running" ? "暂停" : "继续";
+  }
   guideControl.hidden = false;
-  guideControl.textContent = movementTimer ? "暂停" : "再做一次";
 }
 
-function startMovement(key) {
+function runMovementTimer() {
   clearInterval(movementTimer);
-  activeMovement = key;
-  activeStep = 0;
-  movementSeconds = movementPlans[key].steps[0][0];
+  movementState = "running";
   movementTimer = setInterval(() => {
     movementSeconds -= 1;
     if (movementSeconds <= 0) {
@@ -123,6 +129,7 @@ function startMovement(key) {
       if (activeStep >= movementPlans[activeMovement].steps.length) {
         clearInterval(movementTimer);
         movementTimer = null;
+        movementState = "done";
       } else {
         movementSeconds = movementPlans[activeMovement].steps[activeStep][0];
       }
@@ -130,15 +137,25 @@ function startMovement(key) {
     renderMovement();
   }, 1000);
   renderMovement();
+}
+
+function startMovement(key) {
+  activeMovement = key;
+  activeStep = 0;
+  movementSeconds = movementPlans[key].steps[0][0];
+  runMovementTimer();
   movementGuide.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 document.querySelectorAll("[data-movement]").forEach((button) => button.addEventListener("click", () => startMovement(button.dataset.movement)));
 guideControl.addEventListener("click", () => {
-  if (movementTimer) {
+  if (movementState === "running") {
     clearInterval(movementTimer);
     movementTimer = null;
+    movementState = "paused";
     renderMovement();
+  } else if (movementState === "paused") {
+    runMovementTimer();
   } else if (activeMovement) {
     startMovement(activeMovement);
   }
