@@ -182,3 +182,156 @@ guideControl.addEventListener("click", () => {
     startMovement(activeMovement);
   }
 });
+
+
+let audioContext = null;
+let masterGain = null;
+let soundSources = [];
+let activeSound = null;
+
+const soundNames = {
+  rain: "雨窗正在播放",
+  forest: "松林微风正在播放",
+  night: "深夜自习室正在播放",
+};
+
+const soundPlayer = document.querySelector("#sound-player");
+const soundStatus = document.querySelector("#sound-status");
+const soundVolume = document.querySelector("#sound-volume");
+const stopSoundButton = document.querySelector("#stop-sound");
+
+function ensureAudioContext() {
+  if (audioContext) return true;
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) {
+    soundStatus.textContent = "当前浏览器不支持实时音景";
+    return false;
+  }
+  audioContext = new AudioContextClass();
+  masterGain = audioContext.createGain();
+  masterGain.gain.value = Number(soundVolume.value) / 100;
+  masterGain.connect(audioContext.destination);
+  return true;
+}
+
+function rememberSource(source) {
+  soundSources.push(source);
+  return source;
+}
+
+function createNoiseSource(seconds = 2) {
+  const length = audioContext.sampleRate * seconds;
+  const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
+  const data = buffer.getChannelData(0);
+  let last = 0;
+  for (let index = 0; index < length; index += 1) {
+    const white = Math.random() * 2 - 1;
+    last = last * 0.985 + white * 0.015;
+    data[index] = white * 0.55 + last * 0.45;
+  }
+  const source = rememberSource(audioContext.createBufferSource());
+  source.buffer = buffer;
+  source.loop = true;
+  return source;
+}
+
+function stopSoundscape(updateUI = true) {
+  soundSources.forEach((source) => {
+    try { source.stop(); } catch {}
+    try { source.disconnect(); } catch {}
+  });
+  soundSources = [];
+  activeSound = null;
+  if (updateUI) {
+    soundPlayer.classList.remove("is-playing");
+    soundStatus.textContent = "选择一个音景开始播放";
+    stopSoundButton.disabled = true;
+    document.querySelectorAll("[data-sound]").forEach((button) => {
+      button.classList.remove("is-playing");
+      button.querySelector("em").textContent = "播放";
+    });
+  }
+}
+
+function connectRain() {
+  const noise = createNoiseSource();
+  const highpass = audioContext.createBiquadFilter();
+  const lowpass = audioContext.createBiquadFilter();
+  const gain = audioContext.createGain();
+  highpass.type = "highpass";
+  highpass.frequency.value = 420;
+  lowpass.type = "lowpass";
+  lowpass.frequency.value = 5200;
+  gain.gain.value = 0.16;
+  noise.connect(highpass).connect(lowpass).connect(gain).connect(masterGain);
+  noise.start();
+}
+
+function connectForest() {
+  const noise = createNoiseSource(3);
+  const filter = audioContext.createBiquadFilter();
+  const gain = audioContext.createGain();
+  const lfo = rememberSource(audioContext.createOscillator());
+  const lfoGain = audioContext.createGain();
+  filter.type = "bandpass";
+  filter.frequency.value = 760;
+  filter.Q.value = 0.55;
+  gain.gain.value = 0.11;
+  lfo.frequency.value = 0.09;
+  lfoGain.gain.value = 0.045;
+  lfo.connect(lfoGain).connect(gain.gain);
+  noise.connect(filter).connect(gain).connect(masterGain);
+  noise.start();
+  lfo.start();
+}
+
+function connectNight() {
+  const hum = rememberSource(audioContext.createOscillator());
+  const overtone = rememberSource(audioContext.createOscillator());
+  const humGain = audioContext.createGain();
+  const overtoneGain = audioContext.createGain();
+  const noise = createNoiseSource();
+  const lowpass = audioContext.createBiquadFilter();
+  const noiseGain = audioContext.createGain();
+  hum.type = "sine";
+  hum.frequency.value = 98;
+  humGain.gain.value = 0.025;
+  overtone.type = "sine";
+  overtone.frequency.value = 196;
+  overtoneGain.gain.value = 0.008;
+  lowpass.type = "lowpass";
+  lowpass.frequency.value = 420;
+  noiseGain.gain.value = 0.035;
+  hum.connect(humGain).connect(masterGain);
+  overtone.connect(overtoneGain).connect(masterGain);
+  noise.connect(lowpass).connect(noiseGain).connect(masterGain);
+  hum.start();
+  overtone.start();
+  noise.start();
+}
+
+async function startSoundscape(type) {
+  if (!ensureAudioContext()) return;
+  await audioContext.resume();
+  stopSoundscape(false);
+  activeSound = type;
+  if (type === "rain") connectRain();
+  if (type === "forest") connectForest();
+  if (type === "night") connectNight();
+  soundPlayer.classList.add("is-playing");
+  soundStatus.textContent = soundNames[type];
+  stopSoundButton.disabled = false;
+  document.querySelectorAll("[data-sound]").forEach((button) => {
+    const isActive = button.dataset.sound === type;
+    button.classList.toggle("is-playing", isActive);
+    button.querySelector("em").textContent = isActive ? "播放中" : "播放";
+  });
+}
+
+document.querySelectorAll("[data-sound]").forEach((button) => button.addEventListener("click", () => startSoundscape(button.dataset.sound)));
+soundVolume.addEventListener("input", () => {
+  if (!masterGain) return;
+  masterGain.gain.setTargetAtTime(Number(soundVolume.value) / 100, audioContext.currentTime, 0.02);
+});
+stopSoundButton.addEventListener("click", () => stopSoundscape(true));
+window.addEventListener("pagehide", () => stopSoundscape(false));
