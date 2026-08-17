@@ -12,7 +12,7 @@
   <main>
     <nav class="nav" aria-label="主导航">
       <a class="brand" href="#top"><span class="brand-mark">☾</span> 松一会儿</a>
-      <div class="nav-links"><a href="#breathing">呼吸</a><a href="#small-breaks">小憩</a><a href="#relax-moves">动作</a><button id="nav-note">换句话</button></div>
+      <div class="nav-links"><a href="#breathing">呼吸</a><a href="#soundscape">声音</a><a href="#small-breaks">小憩</a><a href="#relax-moves">动作</a><button id="nav-note">换句话</button></div>
     </nav>
 
     <section class="hero" id="top">
@@ -36,8 +36,32 @@
       </div>
     </section>
 
+    <section class="soundscape" id="soundscape">
+      <div class="section-heading">
+        <div><p class="section-kicker">02 · 给耳朵留白</p><h2>选一段声音，陪你慢下来</h2></div>
+        <p>音景由浏览器实时生成，不下载音频，也不会收集播放记录。</p>
+      </div>
+      <div class="sound-layout">
+        <div class="sound-options">
+          <button class="sound-card" data-sound="rain"><span class="sound-icon">☂</span><span><strong>雨窗</strong><small>细雨落在窗边，适合读文献。</small></span><em>播放</em></button>
+          <button class="sound-card" data-sound="forest"><span class="sound-icon">⌇</span><span><strong>松林微风</strong><small>轻柔起伏的风声，适合放空。</small></span><em>播放</em></button>
+          <button class="sound-card" data-sound="night"><span class="sound-icon">☾</span><span><strong>深夜自习室</strong><small>低沉安静的环境音，适合写作。</small></span><em>播放</em></button>
+        </div>
+        <div class="sound-player" id="sound-player">
+          <div class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <p id="sound-status">选择一个音景开始播放</p>
+          <div class="sound-controls">
+            <label for="sound-volume">音量 <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="环境音音量"></label>
+            <button id="stop-sound" disabled>停止</button>
+          </div>
+          <a class="licensed-music" href="https://music.apple.com/cn/artist/%E5%91%A8%E6%9D%B0%E4%BC%A6/300117743" target="_blank" rel="noopener noreferrer">去正版平台听周杰伦 <span>↗</span></a>
+          <small class="copyright-note">受版权保护的歌曲将在 Apple Music 新页面打开。</small>
+        </div>
+      </div>
+    </section>
+
     <section class="breaks" id="small-breaks">
-      <div class="section-heading"><div><p class="section-kicker">02 · 换个频道</p><h2>此刻，你想怎么休息？</h2></div><p>不追求效率，只挑一件让你舒服的小事。</p></div>
+      <div class="section-heading"><div><p class="section-kicker">03 · 换个频道</p><h2>此刻，你想怎么休息？</h2></div><p>不追求效率，只挑一件让你舒服的小事。</p></div>
       <div class="activity-grid">
         <article class="activity"><div class="activity-top"><span class="activity-icon">◎</span><span>1 分钟</span></div><h3>跟着呼吸</h3><p>把注意力从结果，轻轻带回身体。</p><button data-seconds="60">开始 <span>↗</span></button></article>
         <article class="activity"><div class="activity-top"><span class="activity-icon">◌</span><span>3 分钟</span></div><h3>看看远方</h3><p>离开屏幕，让眼睛和大脑一起松开。</p><button data-seconds="180">开始 <span>↗</span></button></article>
@@ -46,7 +70,7 @@
     </section>
 
     <section class="movements" id="relax-moves">
-      <div class="section-heading"><div><p class="section-kicker">03 · 松开身体</p><h2>跟着做一个放松动作</h2></div><p>动作保持轻柔，以舒服为准；如果出现疼痛，请立即停止。</p></div>
+      <div class="section-heading"><div><p class="section-kicker">04 · 松开身体</p><h2>跟着做一个放松动作</h2></div><p>动作保持轻柔，以舒服为准；如果出现疼痛，请立即停止。</p></div>
       <div class="movement-layout">
         <div class="movement-list">
           <button class="movement-card" data-movement="shoulders"><span class="movement-icon">↺</span><span><strong>肩颈松开</strong><small>缓解久坐后紧绷的肩膀和后颈。</small></span><em>50 秒 →</em></button>
